@@ -9,18 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WajibPajakRouteImport } from './routes/wajib-pajak'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedWajibPajakRouteImport } from './routes/_authenticated.wajib-pajak'
+import { Route as AuthenticatedDokumenRouteImport } from './routes/_authenticated.dokumen'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedDokumenIndexRouteImport } from './routes/_authenticated.dokumen.index'
+import { Route as ApiDocumentsSlugRouteImport } from './routes/api.documents.$slug'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
+import { Route as AuthenticatedDokumenSlugRouteImport } from './routes/_authenticated.dokumen.$slug'
 
-const WajibPajakRoute = WajibPajakRouteImport.update({
-  id: '/wajib-pajak',
-  path: '/wajib-pajak',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -31,9 +31,8 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -41,72 +40,131 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedWajibPajakRoute = AuthenticatedWajibPajakRouteImport.update({
+  id: '/wajib-pajak',
+  path: '/wajib-pajak',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDokumenRoute = AuthenticatedDokumenRouteImport.update({
+  id: '/dokumen',
+  path: '/dokumen',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDokumenIndexRoute =
+  AuthenticatedDokumenIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDokumenRoute,
+  } as any)
+const ApiDocumentsSlugRoute = ApiDocumentsSlugRouteImport.update({
+  id: '/api/documents/$slug',
+  path: '/api/documents/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDokumenSlugRoute =
+  AuthenticatedDokumenSlugRouteImport.update({
+    id: '/$slug',
+    path: '/$slug',
+    getParentRoute: () => AuthenticatedDokumenRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/wajib-pajak': typeof WajibPajakRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dokumen': typeof AuthenticatedDokumenRouteWithChildren
+  '/wajib-pajak': typeof AuthenticatedWajibPajakRoute
+  '/dokumen/$slug': typeof AuthenticatedDokumenSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/documents/$slug': typeof ApiDocumentsSlugRoute
+  '/dokumen/': typeof AuthenticatedDokumenIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/wajib-pajak': typeof WajibPajakRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/wajib-pajak': typeof AuthenticatedWajibPajakRoute
+  '/dokumen/$slug': typeof AuthenticatedDokumenSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/documents/$slug': typeof ApiDocumentsSlugRoute
+  '/dokumen': typeof AuthenticatedDokumenIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/wajib-pajak': typeof WajibPajakRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/dokumen': typeof AuthenticatedDokumenRouteWithChildren
+  '/_authenticated/wajib-pajak': typeof AuthenticatedWajibPajakRoute
+  '/_authenticated/dokumen/$slug': typeof AuthenticatedDokumenSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/documents/$slug': typeof ApiDocumentsSlugRoute
+  '/_authenticated/dokumen/': typeof AuthenticatedDokumenIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/dashboard' | '/login' | '/register' | '/wajib-pajak' | '/api/auth/$'
+    | '/'
+    | '/login'
+    | '/register'
+    | '/dashboard'
+    | '/dokumen'
+    | '/wajib-pajak'
+    | '/dokumen/$slug'
+    | '/api/auth/$'
+    | '/api/documents/$slug'
+    | '/dokumen/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/dashboard' | '/login' | '/register' | '/wajib-pajak' | '/api/auth/$'
+    | '/'
+    | '/login'
+    | '/register'
+    | '/dashboard'
+    | '/wajib-pajak'
+    | '/dokumen/$slug'
+    | '/api/auth/$'
+    | '/api/documents/$slug'
+    | '/dokumen'
   id:
     | '__root__'
     | '/'
-    | '/dashboard'
+    | '/_authenticated'
     | '/login'
     | '/register'
-    | '/wajib-pajak'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/dokumen'
+    | '/_authenticated/wajib-pajak'
+    | '/_authenticated/dokumen/$slug'
     | '/api/auth/$'
+    | '/api/documents/$slug'
+    | '/_authenticated/dokumen/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
-  WajibPajakRoute: typeof WajibPajakRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiDocumentsSlugRoute: typeof ApiDocumentsSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/wajib-pajak': {
-      id: '/wajib-pajak'
-      path: '/wajib-pajak'
-      fullPath: '/wajib-pajak'
-      preLoaderRoute: typeof WajibPajakRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -121,11 +179,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -135,6 +193,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/wajib-pajak': {
+      id: '/_authenticated/wajib-pajak'
+      path: '/wajib-pajak'
+      fullPath: '/wajib-pajak'
+      preLoaderRoute: typeof AuthenticatedWajibPajakRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dokumen': {
+      id: '/_authenticated/dokumen'
+      path: '/dokumen'
+      fullPath: '/dokumen'
+      preLoaderRoute: typeof AuthenticatedDokumenRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dokumen/': {
+      id: '/_authenticated/dokumen/'
+      path: '/'
+      fullPath: '/dokumen/'
+      preLoaderRoute: typeof AuthenticatedDokumenIndexRouteImport
+      parentRoute: typeof AuthenticatedDokumenRoute
+    }
+    '/api/documents/$slug': {
+      id: '/api/documents/$slug'
+      path: '/api/documents/$slug'
+      fullPath: '/api/documents/$slug'
+      preLoaderRoute: typeof ApiDocumentsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -142,16 +235,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dokumen/$slug': {
+      id: '/_authenticated/dokumen/$slug'
+      path: '/$slug'
+      fullPath: '/dokumen/$slug'
+      preLoaderRoute: typeof AuthenticatedDokumenSlugRouteImport
+      parentRoute: typeof AuthenticatedDokumenRoute
+    }
   }
 }
 
+interface AuthenticatedDokumenRouteChildren {
+  AuthenticatedDokumenSlugRoute: typeof AuthenticatedDokumenSlugRoute
+  AuthenticatedDokumenIndexRoute: typeof AuthenticatedDokumenIndexRoute
+}
+
+const AuthenticatedDokumenRouteChildren: AuthenticatedDokumenRouteChildren = {
+  AuthenticatedDokumenSlugRoute: AuthenticatedDokumenSlugRoute,
+  AuthenticatedDokumenIndexRoute: AuthenticatedDokumenIndexRoute,
+}
+
+const AuthenticatedDokumenRouteWithChildren =
+  AuthenticatedDokumenRoute._addFileChildren(AuthenticatedDokumenRouteChildren)
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDokumenRoute: typeof AuthenticatedDokumenRouteWithChildren
+  AuthenticatedWajibPajakRoute: typeof AuthenticatedWajibPajakRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDokumenRoute: AuthenticatedDokumenRouteWithChildren,
+  AuthenticatedWajibPajakRoute: AuthenticatedWajibPajakRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
-  WajibPajakRoute: WajibPajakRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiDocumentsSlugRoute: ApiDocumentsSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
