@@ -81,7 +81,7 @@ export function Sidebar({
 			>
 				<div className="flex items-center justify-between px-3 py-4">
 					{collapsed ? null : (
-						<span className="text-base font-bold text-blue-600">Bapenda</span>
+						<span className="text-base font-bold text-blue-600">SIAPPAS</span>
 					)}
 					{/* Desktop icon-rail toggle */}
 					<button
