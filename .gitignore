@@ -12,7 +12,11 @@ dist-ssr
 __unconfig*
 todos.json
 
-# Local Postgres data volume (see docker-compose.yml)
-.data
+# Raw taxpayer data (large, PII) — imported into Postgres via scripts/import-tunggakan.ts,
+# never committed to git.
+public/data/
+/sptpd18juli.csv
+*:Zone.Identifier
 
 /src/generated/prisma
+.data/

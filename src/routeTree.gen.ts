@@ -9,21 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RegisterRouteImport } from './routes/register'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedWajibPajakRouteImport } from './routes/_authenticated.wajib-pajak'
-import { Route as AuthenticatedDokumenRouteImport } from './routes/_authenticated.dokumen'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedDokumenRouteImport } from './routes/_authenticated.dokumen'
+import { Route as AuthenticatedTunggakanRouteImport } from './routes/_authenticated.tunggakan'
+import { Route as AuthenticatedWajibPajakRouteImport } from './routes/_authenticated.wajib-pajak'
 import { Route as AuthenticatedDokumenIndexRouteImport } from './routes/_authenticated.dokumen.index'
-import { Route as ApiDocumentsSlugRouteImport } from './routes/api.documents.$slug'
-import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 import { Route as AuthenticatedDokumenSlugRouteImport } from './routes/_authenticated.dokumen.$slug'
+import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
+import { Route as ApiDocumentsSlugRouteImport } from './routes/api.documents.$slug'
 
-const RegisterRoute = RegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -31,18 +36,14 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedWajibPajakRoute = AuthenticatedWajibPajakRouteImport.update({
-  id: '/wajib-pajak',
-  path: '/wajib-pajak',
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedDokumenRoute = AuthenticatedDokumenRouteImport.update({
@@ -50,9 +51,14 @@ const AuthenticatedDokumenRoute = AuthenticatedDokumenRouteImport.update({
   path: '/dokumen',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AuthenticatedTunggakanRoute = AuthenticatedTunggakanRouteImport.update({
+  id: '/tunggakan',
+  path: '/tunggakan',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedWajibPajakRoute = AuthenticatedWajibPajakRouteImport.update({
+  id: '/wajib-pajak',
+  path: '/wajib-pajak',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedDokumenIndexRoute =
@@ -61,22 +67,22 @@ const AuthenticatedDokumenIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedDokumenRoute,
   } as any)
-const ApiDocumentsSlugRoute = ApiDocumentsSlugRouteImport.update({
-  id: '/api/documents/$slug',
-  path: '/api/documents/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedDokumenSlugRoute =
   AuthenticatedDokumenSlugRouteImport.update({
     id: '/$slug',
     path: '/$slug',
     getParentRoute: () => AuthenticatedDokumenRoute,
   } as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDocumentsSlugRoute = ApiDocumentsSlugRouteImport.update({
+  id: '/api/documents/$slug',
+  path: '/api/documents/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dokumen': typeof AuthenticatedDokumenRouteWithChildren
+  '/tunggakan': typeof AuthenticatedTunggakanRoute
   '/wajib-pajak': typeof AuthenticatedWajibPajakRoute
   '/dokumen/$slug': typeof AuthenticatedDokumenSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/tunggakan': typeof AuthenticatedTunggakanRoute
   '/wajib-pajak': typeof AuthenticatedWajibPajakRoute
   '/dokumen/$slug': typeof AuthenticatedDokumenSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dokumen': typeof AuthenticatedDokumenRouteWithChildren
+  '/_authenticated/tunggakan': typeof AuthenticatedTunggakanRoute
   '/_authenticated/wajib-pajak': typeof AuthenticatedWajibPajakRoute
   '/_authenticated/dokumen/$slug': typeof AuthenticatedDokumenSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard'
     | '/dokumen'
+    | '/tunggakan'
     | '/wajib-pajak'
     | '/dokumen/$slug'
     | '/api/auth/$'
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/dashboard'
+    | '/tunggakan'
     | '/wajib-pajak'
     | '/dokumen/$slug'
     | '/api/auth/$'
@@ -147,6 +158,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/_authenticated/dashboard'
     | '/_authenticated/dokumen'
+    | '/_authenticated/tunggakan'
     | '/_authenticated/wajib-pajak'
     | '/_authenticated/dokumen/$slug'
     | '/api/auth/$'
@@ -165,18 +177,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -186,18 +191,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/wajib-pajak': {
-      id: '/_authenticated/wajib-pajak'
-      path: '/wajib-pajak'
-      fullPath: '/wajib-pajak'
-      preLoaderRoute: typeof AuthenticatedWajibPajakRouteImport
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/dokumen': {
@@ -207,11 +219,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDokumenRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+    '/_authenticated/tunggakan': {
+      id: '/_authenticated/tunggakan'
+      path: '/tunggakan'
+      fullPath: '/tunggakan'
+      preLoaderRoute: typeof AuthenticatedTunggakanRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/wajib-pajak': {
+      id: '/_authenticated/wajib-pajak'
+      path: '/wajib-pajak'
+      fullPath: '/wajib-pajak'
+      preLoaderRoute: typeof AuthenticatedWajibPajakRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/dokumen/': {
@@ -221,12 +240,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDokumenIndexRouteImport
       parentRoute: typeof AuthenticatedDokumenRoute
     }
-    '/api/documents/$slug': {
-      id: '/api/documents/$slug'
-      path: '/api/documents/$slug'
-      fullPath: '/api/documents/$slug'
-      preLoaderRoute: typeof ApiDocumentsSlugRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_authenticated/dokumen/$slug': {
+      id: '/_authenticated/dokumen/$slug'
+      path: '/$slug'
+      fullPath: '/dokumen/$slug'
+      preLoaderRoute: typeof AuthenticatedDokumenSlugRouteImport
+      parentRoute: typeof AuthenticatedDokumenRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -235,12 +254,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/dokumen/$slug': {
-      id: '/_authenticated/dokumen/$slug'
-      path: '/$slug'
-      fullPath: '/dokumen/$slug'
-      preLoaderRoute: typeof AuthenticatedDokumenSlugRouteImport
-      parentRoute: typeof AuthenticatedDokumenRoute
+    '/api/documents/$slug': {
+      id: '/api/documents/$slug'
+      path: '/api/documents/$slug'
+      fullPath: '/api/documents/$slug'
+      preLoaderRoute: typeof ApiDocumentsSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -261,12 +280,14 @@ const AuthenticatedDokumenRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDokumenRoute: typeof AuthenticatedDokumenRouteWithChildren
+  AuthenticatedTunggakanRoute: typeof AuthenticatedTunggakanRoute
   AuthenticatedWajibPajakRoute: typeof AuthenticatedWajibPajakRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDokumenRoute: AuthenticatedDokumenRouteWithChildren,
+  AuthenticatedTunggakanRoute: AuthenticatedTunggakanRoute,
   AuthenticatedWajibPajakRoute: AuthenticatedWajibPajakRoute,
 }
 

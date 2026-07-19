@@ -80,3 +80,68 @@ model Verification {
   @@index([identifier])
   @@map("verification")
 }
+
+/// SPTPD billing/assessment rows ("ketetapan"), sourced from sptpd18juli.csv.
+model SptpdKetetapan {
+  id             String    @id @default(dbgenerated("gen_random_uuid()"))
+  no             Int?
+  jenisPajak     String
+  npwpd          String
+  namaRekening   String
+  nop            String?
+  namaWp         String
+  namaObjek      String?
+  alamatObjek    String?
+  kecamatan      String?
+  desa           String?
+  kohir          String    @unique
+  tglLapor       DateTime?
+  masaPajak      String?
+  masaPajakYear  Int?
+  masaPajakMonth Int?
+  jumlah         Decimal   @db.Decimal(18, 2)
+  keterangan     String?
+  petugasInput   String?
+  createdAt      DateTime  @default(now())
+
+  @@index([npwpd])
+  @@index([jenisPajak])
+  @@index([masaPajakYear, masaPajakMonth])
+  @@map("sptpd_ketetapan")
+}
+
+/// Actual payment receipts ("penerimaan"), sourced from the "Buku Bantu
+/// Penerimaan" report files (one per tax type). Matched back to
+/// SptpdKetetapan via `kohir` — a single kohir can have multiple receipt
+/// rows (split/installment payments), so amounts must be summed per kohir.
+model SptpdPenerimaan {
+  id             String    @id @default(dbgenerated("gen_random_uuid()"))
+  no             Int?
+  jenisPajak     String
+  noRekening     String?
+  namaRekening   String?
+  namaSipd       String?
+  noBukti        String?
+  diterimaDari   String?
+  alamat         String?
+  desa           String?
+  kecamatan      String?
+  pembayaranDari String?
+  npwpd          String?
+  kohir          String?
+  nop            String?
+  ket            String?
+  masaPajak      String?
+  pokok          Decimal?  @db.Decimal(18, 2)
+  sanksi         Decimal?  @db.Decimal(18, 2)
+  lain2          Decimal?  @db.Decimal(18, 2)
+  totalBayar     Decimal   @db.Decimal(18, 2)
+  tglBayar       DateTime?
+  tglKetetapan   String?
+  createdAt      DateTime  @default(now())
+
+  @@index([npwpd])
+  @@index([kohir])
+  @@index([jenisPajak])
+  @@map("sptpd_penerimaan")
+}

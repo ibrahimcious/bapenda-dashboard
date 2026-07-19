@@ -7,6 +7,7 @@ import {
 	LogOut,
 	PanelLeft,
 	PanelLeftClose,
+	Wallet,
 } from "lucide-react";
 import { useState } from "react";
 import { logoutServerFn } from "#/modules/auth/auth.api";
@@ -53,6 +54,14 @@ export function Sidebar({ userName }: { userName?: string }) {
 				>
 					<Building2 className="size-5 shrink-0" />
 					{collapsed ? null : "Wajib Pajak"}
+				</Link>
+				<Link
+					to="/tunggakan"
+					search={{ jenis: "all", q: "", status: "all", year: 2026, page: 1 }}
+					className={navItemClass}
+				>
+					<Wallet className="size-5 shrink-0" />
+					{collapsed ? null : "Tunggakan"}
 				</Link>
 				<Link to="/dokumen" className={navItemClass}>
 					<FileText className="size-5 shrink-0" />
