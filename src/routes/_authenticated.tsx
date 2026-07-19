@@ -19,7 +19,7 @@ function RouteComponent() {
 	return (
 		<div className="flex min-h-screen bg-gray-50">
 			<Sidebar userName={session?.user.name} userRole={session?.user.role} />
-			<main className="flex-1 overflow-x-auto p-6">
+			<main className="flex-1 overflow-x-auto p-4 pt-16 md:p-6">
 				<div className="mx-auto max-w-7xl space-y-5">
 					<Outlet />
 				</div>

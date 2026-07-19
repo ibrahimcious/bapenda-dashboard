@@ -123,7 +123,7 @@ export const TAX_CATALOG: TaxCatalogEntry[] = [
 	},
 	{
 		code: "PKB",
-		name: "Opsen Pajak Kendaraan Bermotor",
+		name: "Opsen PKB",
 		shortName: "Opsen PKB",
 		quarterlyTarget: [
 			12_555_736_455, 33_481_963_880, 62_778_682_275, 83_704_909_700,
@@ -134,7 +134,7 @@ export const TAX_CATALOG: TaxCatalogEntry[] = [
 	},
 	{
 		code: "BBNKB",
-		name: "Opsen Bea Balik Nama Kendaraan Bermotor",
+		name: "Opsen BBNKB",
 		shortName: "Opsen BBNKB",
 		quarterlyTarget: [
 			7_879_713_360, 15_759_426_720, 29_548_925_100, 39_398_566_800,
