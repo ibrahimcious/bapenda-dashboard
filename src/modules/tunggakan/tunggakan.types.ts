@@ -39,12 +39,24 @@ export interface TunggakanRow {
 	npwpd: string;
 	jenisPajak: string;
 	namaWp: string;
+	/** Object's kecamatan — a taxpayer can have objects across several
+	 * kecamatan (e.g. a chain with billboards in many locations), so this is
+	 * per-row, not per-taxpayer. */
+	kecamatan: string | null;
 	totalKetetapan: number;
 	totalTerbayar: number;
 	sisaTunggakan: number;
 	progressPct: number;
 	status: PaymentStatus;
 	months: MonthlyTunggakan[];
+}
+
+/** Sisa tunggakan aggregated for one kecamatan — the "map" overview chart. */
+export interface KecamatanTunggakan {
+	kecamatan: string;
+	totalKetetapan: number;
+	totalTerbayar: number;
+	sisaTunggakan: number;
 }
 
 export interface TunggakanResult {
@@ -54,6 +66,17 @@ export interface TunggakanResult {
 	pageSize: number;
 	totalPages: number;
 	years: number[];
-	counts: { total: number; lunas: number; sebagian: number; belumBayar: number };
-	summary: { totalKetetapan: number; totalTerbayar: number; sisaTunggakan: number };
+	kecamatanList: string[];
+	byKecamatan: KecamatanTunggakan[];
+	counts: {
+		total: number;
+		lunas: number;
+		sebagian: number;
+		belumBayar: number;
+	};
+	summary: {
+		totalKetetapan: number;
+		totalTerbayar: number;
+		sisaTunggakan: number;
+	};
 }

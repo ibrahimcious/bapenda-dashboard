@@ -124,7 +124,14 @@ const PENERIMAAN_FILES: { file: string; jenisPajak: string }[] = [
 	{ file: "Buku Bantu Penerimaan - SMART REPORT (5).csv", jenisPajak: "PPJ" },
 	{ file: "Buku Bantu Penerimaan - SMART REPORT (6).csv", jenisPajak: "PARKIR" },
 	{ file: "Buku Bantu Penerimaan - SMART REPORT (7).csv", jenisPajak: "AT" },
+	{ file: "Buku Bantu Penerimaan - SMART REPORT (8).csv", jenisPajak: "BPHTB" },
 	{ file: "Buku Bantu Penerimaan - SMART REPORT (9).csv", jenisPajak: "MINERBA" },
+	// Opsen PKB/BBNKB and BPHTB have no corresponding SPTPD ketetapan (billing)
+	// data, so they're excluded from the Tunggakan comparison (TAX_TYPES in
+	// tunggakan.types.ts) — they only feed the revenue realization dashboard.
+	{ file: "Buku Bantu Penerimaan - SMART REPORT (10).csv", jenisPajak: "OPSEN_PKB" },
+	{ file: "Buku Bantu Penerimaan - SMART REPORT (11).csv", jenisPajak: "OPSEN_BBNKB" },
+	{ file: "Buku Bantu Penerimaan - SMART REPORT (12).csv", jenisPajak: "PBB" },
 ];
 
 async function importPenerimaan() {
@@ -162,6 +169,8 @@ async function importPenerimaan() {
 				sanksi: parseIdDecimal(row.Sanksi),
 				lain2: parseIdDecimal(row.Lain2),
 				totalBayar,
+				pokokMblb: parseIdDecimal(row["Pokok MBLB"]),
+				lain2Mblb: parseIdDecimal(row["Lain2 MBLB"]),
 				tglBayar: parseDDMMYYYY(row["Tgl Bayar"]),
 				tglKetetapan: row["Tgl Ketetapan"] || null,
 			});

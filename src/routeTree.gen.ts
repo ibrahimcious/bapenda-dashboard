@@ -12,9 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedDokumenRouteImport } from './routes/_authenticated.dokumen'
+import { Route as AuthenticatedPenggunaRouteImport } from './routes/_authenticated.pengguna'
+import { Route as AuthenticatedTaxmapperRouteImport } from './routes/_authenticated.taxmapper'
 import { Route as AuthenticatedTunggakanRouteImport } from './routes/_authenticated.tunggakan'
 import { Route as AuthenticatedWajibPajakRouteImport } from './routes/_authenticated.wajib-pajak'
 import { Route as AuthenticatedDokumenIndexRouteImport } from './routes/_authenticated.dokumen.index'
@@ -36,11 +37,6 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RegisterRoute = RegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -49,6 +45,16 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 const AuthenticatedDokumenRoute = AuthenticatedDokumenRouteImport.update({
   id: '/dokumen',
   path: '/dokumen',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPenggunaRoute = AuthenticatedPenggunaRouteImport.update({
+  id: '/pengguna',
+  path: '/pengguna',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedTaxmapperRoute = AuthenticatedTaxmapperRouteImport.update({
+  id: '/taxmapper',
+  path: '/taxmapper',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedTunggakanRoute = AuthenticatedTunggakanRouteImport.update({
@@ -87,9 +93,10 @@ const ApiDocumentsSlugRoute = ApiDocumentsSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dokumen': typeof AuthenticatedDokumenRouteWithChildren
+  '/pengguna': typeof AuthenticatedPenggunaRoute
+  '/taxmapper': typeof AuthenticatedTaxmapperRoute
   '/tunggakan': typeof AuthenticatedTunggakanRoute
   '/wajib-pajak': typeof AuthenticatedWajibPajakRoute
   '/dokumen/$slug': typeof AuthenticatedDokumenSlugRoute
@@ -100,8 +107,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/pengguna': typeof AuthenticatedPenggunaRoute
+  '/taxmapper': typeof AuthenticatedTaxmapperRoute
   '/tunggakan': typeof AuthenticatedTunggakanRoute
   '/wajib-pajak': typeof AuthenticatedWajibPajakRoute
   '/dokumen/$slug': typeof AuthenticatedDokumenSlugRoute
@@ -114,9 +122,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dokumen': typeof AuthenticatedDokumenRouteWithChildren
+  '/_authenticated/pengguna': typeof AuthenticatedPenggunaRoute
+  '/_authenticated/taxmapper': typeof AuthenticatedTaxmapperRoute
   '/_authenticated/tunggakan': typeof AuthenticatedTunggakanRoute
   '/_authenticated/wajib-pajak': typeof AuthenticatedWajibPajakRoute
   '/_authenticated/dokumen/$slug': typeof AuthenticatedDokumenSlugRoute
@@ -129,9 +138,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
-    | '/register'
     | '/dashboard'
     | '/dokumen'
+    | '/pengguna'
+    | '/taxmapper'
     | '/tunggakan'
     | '/wajib-pajak'
     | '/dokumen/$slug'
@@ -142,8 +152,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
-    | '/register'
     | '/dashboard'
+    | '/pengguna'
+    | '/taxmapper'
     | '/tunggakan'
     | '/wajib-pajak'
     | '/dokumen/$slug'
@@ -155,9 +166,10 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/login'
-    | '/register'
     | '/_authenticated/dashboard'
     | '/_authenticated/dokumen'
+    | '/_authenticated/pengguna'
+    | '/_authenticated/taxmapper'
     | '/_authenticated/tunggakan'
     | '/_authenticated/wajib-pajak'
     | '/_authenticated/dokumen/$slug'
@@ -170,7 +182,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
-  RegisterRoute: typeof RegisterRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiDocumentsSlugRoute: typeof ApiDocumentsSlugRoute
 }
@@ -198,13 +209,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -217,6 +221,20 @@ declare module '@tanstack/react-router' {
       path: '/dokumen'
       fullPath: '/dokumen'
       preLoaderRoute: typeof AuthenticatedDokumenRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/pengguna': {
+      id: '/_authenticated/pengguna'
+      path: '/pengguna'
+      fullPath: '/pengguna'
+      preLoaderRoute: typeof AuthenticatedPenggunaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/taxmapper': {
+      id: '/_authenticated/taxmapper'
+      path: '/taxmapper'
+      fullPath: '/taxmapper'
+      preLoaderRoute: typeof AuthenticatedTaxmapperRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/tunggakan': {
@@ -280,6 +298,8 @@ const AuthenticatedDokumenRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDokumenRoute: typeof AuthenticatedDokumenRouteWithChildren
+  AuthenticatedPenggunaRoute: typeof AuthenticatedPenggunaRoute
+  AuthenticatedTaxmapperRoute: typeof AuthenticatedTaxmapperRoute
   AuthenticatedTunggakanRoute: typeof AuthenticatedTunggakanRoute
   AuthenticatedWajibPajakRoute: typeof AuthenticatedWajibPajakRoute
 }
@@ -287,6 +307,8 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDokumenRoute: AuthenticatedDokumenRouteWithChildren,
+  AuthenticatedPenggunaRoute: AuthenticatedPenggunaRoute,
+  AuthenticatedTaxmapperRoute: AuthenticatedTaxmapperRoute,
   AuthenticatedTunggakanRoute: AuthenticatedTunggakanRoute,
   AuthenticatedWajibPajakRoute: AuthenticatedWajibPajakRoute,
 }
@@ -299,7 +321,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
-  RegisterRoute: RegisterRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiDocumentsSlugRoute: ApiDocumentsSlugRoute,
 }

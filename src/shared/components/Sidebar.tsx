@@ -1,12 +1,17 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import {
 	Building2,
+	ChevronDown,
+	ChevronRight,
+	Database,
 	FileText,
 	LayoutDashboard,
 	LogOut,
+	MapPinned,
 	PanelLeft,
 	PanelLeftClose,
+	UserCog,
 	Wallet,
 } from "lucide-react";
 import { useState } from "react";
@@ -15,8 +20,20 @@ import { logoutServerFn } from "#/modules/auth/auth.api";
 const navItemClass =
 	"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 data-[status=active]:bg-blue-50 data-[status=active]:text-blue-700";
 
-export function Sidebar({ userName }: { userName?: string }) {
+const DATA_MENU_PATHS = ["/wajib-pajak", "/tunggakan", "/taxmapper"];
+
+export function Sidebar({
+	userName,
+	userRole,
+}: {
+	userName?: string;
+	userRole?: string | null;
+}) {
 	const [collapsed, setCollapsed] = useState(false);
+	const pathname = useRouterState({ select: (s) => s.location.pathname });
+	const [dataOpen, setDataOpen] = useState(() =>
+		DATA_MENU_PATHS.some((p) => pathname.startsWith(p)),
+	);
 	const logout = useServerFn(logoutServerFn);
 
 	return (
@@ -47,26 +64,69 @@ export function Sidebar({ userName }: { userName?: string }) {
 					<LayoutDashboard className="size-5 shrink-0" />
 					{collapsed ? null : "Dashboard"}
 				</Link>
-				<Link
-					to="/wajib-pajak"
-					search={{ tax: "hotel", q: "", status: "all", page: 1 }}
-					className={navItemClass}
+
+				<button
+					type="button"
+					onClick={() => setDataOpen((o) => !o)}
+					className={`${navItemClass} w-full justify-between`}
 				>
-					<Building2 className="size-5 shrink-0" />
-					{collapsed ? null : "Wajib Pajak"}
-				</Link>
-				<Link
-					to="/tunggakan"
-					search={{ jenis: "all", q: "", status: "all", year: 2026, page: 1 }}
-					className={navItemClass}
-				>
-					<Wallet className="size-5 shrink-0" />
-					{collapsed ? null : "Tunggakan"}
-				</Link>
+					<span className="flex items-center gap-3">
+						<Database className="size-5 shrink-0" />
+						{collapsed ? null : "Data"}
+					</span>
+					{collapsed ? null : dataOpen ? (
+						<ChevronDown className="size-4 shrink-0" />
+					) : (
+						<ChevronRight className="size-4 shrink-0" />
+					)}
+				</button>
+				{!collapsed && dataOpen ? (
+					<div className="ml-4 flex flex-col gap-1 border-l border-gray-200 pl-2">
+						<Link
+							to="/wajib-pajak"
+							search={{ tax: "hotel", q: "", status: "all", page: 1 }}
+							className={navItemClass}
+						>
+							<Building2 className="size-5 shrink-0" />
+							Wajib Pajak
+						</Link>
+						<Link
+							to="/tunggakan"
+							search={{
+								jenis: "all",
+								q: "",
+								status: "all",
+								kecamatan: "all",
+								year: 2026,
+								page: 1,
+							}}
+							className={navItemClass}
+						>
+							<Wallet className="size-5 shrink-0" />
+							Tunggakan
+						</Link>
+						<Link
+							to="/taxmapper"
+							search={{ type: "all", q: "", page: 1 }}
+							className={navItemClass}
+						>
+							<MapPinned className="size-5 shrink-0" />
+							TaxMapper
+						</Link>
+					</div>
+				) : null}
+
 				<Link to="/dokumen" className={navItemClass}>
 					<FileText className="size-5 shrink-0" />
 					{collapsed ? null : "Dokumen"}
 				</Link>
+
+				{userRole === "admin" ? (
+					<Link to="/pengguna" className={navItemClass}>
+						<UserCog className="size-5 shrink-0" />
+						{collapsed ? null : "Kelola Pengguna"}
+					</Link>
+				) : null}
 			</nav>
 
 			<div className="border-t border-gray-200 p-2">

@@ -1,4 +1,4 @@
-import { createFileRoute, isRedirect, Link } from "@tanstack/react-router";
+import { createFileRoute, isRedirect } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { loginServerFn } from "#/modules/auth/auth.api";
@@ -34,21 +34,7 @@ function RouteComponent() {
 	}
 
 	return (
-		<AuthCard
-			title="Masuk"
-			subtitle="Masuk untuk mengakses dashboard."
-			footer={
-				<>
-					Belum punya akun?{" "}
-					<Link
-						to="/register"
-						className="font-medium text-blue-600 hover:underline"
-					>
-						Daftar
-					</Link>
-				</>
-			}
-		>
+		<AuthCard title="Masuk" subtitle="Masuk untuk mengakses dashboard.">
 			<form onSubmit={handleLoginUser} className="space-y-4">
 				<div>
 					<label

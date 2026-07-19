@@ -29,6 +29,14 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
+  /// Fields required by better-auth's admin plugin (see auth.utils.ts) —
+  /// public sign-up is disabled, so only an "admin" role user can create
+  /// new accounts via /pengguna.
+  role       String?
+  banned     Boolean?  @default(false)
+  banReason  String?
+  banExpires DateTime?
+
   @@unique([email])
   @@map("user")
 }
@@ -43,6 +51,9 @@ model Session {
   userAgent String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Set by the admin plugin while an admin is impersonating another user.
+  impersonatedBy String?
 
   @@unique([token])
   @@index([userId])
@@ -136,6 +147,11 @@ model SptpdPenerimaan {
   sanksi         Decimal?  @db.Decimal(18, 2)
   lain2          Decimal?  @db.Decimal(18, 2)
   totalBayar     Decimal   @db.Decimal(18, 2)
+  /// Minerba-only split of `pokok` into the base MBLB tax vs. the newer Opsen
+  /// MBLB surcharge (only file (9) has these columns). The official
+  /// "realisasi" figure for Minerba counts pokokMblb only, not the opsen.
+  pokokMblb      Decimal?  @db.Decimal(18, 2)
+  lain2Mblb      Decimal?  @db.Decimal(18, 2)
   tglBayar       DateTime?
   tglKetetapan   String?
   createdAt      DateTime  @default(now())
@@ -144,4 +160,23 @@ model SptpdPenerimaan {
   @@index([kohir])
   @@index([jenisPajak])
   @@map("sptpd_penerimaan")
+}
+
+/// Field-mapping/monitoring data ("TaxMapper") — independently observed
+/// monthly revenue per tax object, not tied to SPTPD billing/payment records
+/// (no NPWPD/KOHIR join key). One row per object per month.
+model TaxMapperRecord {
+  id             String   @id @default(dbgenerated("gen_random_uuid()"))
+  no             Int?
+  niop           String
+  namaObjekPajak String
+  type           String
+  month          Int // 1-12
+  amount         Decimal  @db.Decimal(18, 2)
+  createdAt      DateTime @default(now())
+
+  @@index([niop])
+  @@index([type])
+  @@index([month])
+  @@map("tax_mapper_record")
 }

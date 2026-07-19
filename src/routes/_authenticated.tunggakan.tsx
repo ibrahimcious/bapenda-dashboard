@@ -1,13 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Fragment, useState } from "react";
+import { KecamatanTunggakanChart } from "#/modules/tunggakan/components/KecamatanTunggakanChart";
+import { StatusDistributionChart } from "#/modules/tunggakan/components/StatusDistributionChart";
 import { getTunggakanServerFn } from "#/modules/tunggakan/tunggakan.api";
-import { TAX_TYPES, TAX_SLUGS, type PaymentStatus, type TunggakanRow } from "#/modules/tunggakan/tunggakan.types";
+import {
+	type PaymentStatus,
+	TAX_SLUGS,
+	TAX_TYPES,
+	type TunggakanRow,
+} from "#/modules/tunggakan/tunggakan.types";
 
 interface TunggakanSearch {
 	jenis: string;
 	q: string;
 	status: string;
+	kecamatan: string;
 	year: number;
 	page: number;
 }
@@ -15,11 +23,14 @@ interface TunggakanSearch {
 export const Route = createFileRoute("/_authenticated/tunggakan")({
 	validateSearch: (s: Record<string, unknown>): TunggakanSearch => {
 		const jenis =
-			typeof s.jenis === "string" && (s.jenis === "all" || TAX_SLUGS.includes(s.jenis))
+			typeof s.jenis === "string" &&
+			(s.jenis === "all" || TAX_SLUGS.includes(s.jenis))
 				? s.jenis
 				: "all";
 		const status =
-			s.status === "Lunas" || s.status === "Sebagian" || s.status === "Belum Bayar"
+			s.status === "Lunas" ||
+			s.status === "Sebagian" ||
+			s.status === "Belum Bayar"
 				? s.status
 				: "all";
 		const year = Number(s.year);
@@ -28,6 +39,8 @@ export const Route = createFileRoute("/_authenticated/tunggakan")({
 			jenis,
 			q: typeof s.q === "string" ? s.q : "",
 			status,
+			kecamatan:
+				typeof s.kecamatan === "string" && s.kecamatan ? s.kecamatan : "all",
 			year: Number.isFinite(year) && year >= 2000 ? Math.floor(year) : 2026,
 			page: Number.isFinite(page) && page >= 1 ? Math.floor(page) : 1,
 		};
@@ -65,7 +78,8 @@ function StatusBadge({ status }: { status: PaymentStatus }) {
 }
 
 function MonthCard({ m }: { m: TunggakanRow["months"][number] }) {
-	const pct = m.ketetapan > 0 ? Math.min(100, (m.terbayar / m.ketetapan) * 100) : 100;
+	const pct =
+		m.ketetapan > 0 ? Math.min(100, (m.terbayar / m.ketetapan) * 100) : 100;
 	return (
 		<div
 			className={`rounded-lg border p-3 ${
@@ -80,19 +94,29 @@ function MonthCard({ m }: { m: TunggakanRow["months"][number] }) {
 				<span className="text-sm font-medium text-gray-700">{m.label}</span>
 				<StatusBadge status={m.status} />
 			</div>
-			<div className="mt-2 text-[10px] font-medium tracking-wide text-gray-400">KETETAPAN</div>
-			<div className="text-sm font-semibold text-gray-900">{fmt(m.ketetapan)}</div>
+			<div className="mt-2 text-[10px] font-medium tracking-wide text-gray-400">
+				KETETAPAN
+			</div>
+			<div className="text-sm font-semibold text-gray-900">
+				{fmt(m.ketetapan)}
+			</div>
 			{m.status === "Lunas" ? (
 				<>
-					<div className="mt-1 text-[10px] font-medium tracking-wide text-gray-400">TERBAYAR</div>
-					<div className="text-sm font-semibold text-emerald-600">{fmt(m.terbayar)}</div>
+					<div className="mt-1 text-[10px] font-medium tracking-wide text-gray-400">
+						TERBAYAR
+					</div>
+					<div className="text-sm font-semibold text-emerald-600">
+						{fmt(m.terbayar)}
+					</div>
 				</>
 			) : (
 				<>
 					<div className="mt-1 text-[10px] font-medium tracking-wide text-gray-400">
 						TUNGGAKAN
 					</div>
-					<div className="text-sm font-semibold text-red-600">{fmt(m.sisa)}</div>
+					<div className="text-sm font-semibold text-red-600">
+						{fmt(m.sisa)}
+					</div>
 				</>
 			)}
 			<div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
@@ -123,26 +147,34 @@ function ExpandedDetail({ row }: { row: TunggakanRow }) {
 									<div className="text-[10px] font-medium tracking-wide text-gray-400">
 										TOTAL KETETAPAN
 									</div>
-									<div className="font-semibold text-gray-900">{fmt(row.totalKetetapan)}</div>
+									<div className="font-semibold text-gray-900">
+										{fmt(row.totalKetetapan)}
+									</div>
 								</div>
 								<div>
 									<div className="text-[10px] font-medium tracking-wide text-gray-400">
 										TERBAYAR
 									</div>
-									<div className="font-semibold text-emerald-600">{fmt(row.totalTerbayar)}</div>
+									<div className="font-semibold text-emerald-600">
+										{fmt(row.totalTerbayar)}
+									</div>
 								</div>
 								<div>
 									<div className="text-[10px] font-medium tracking-wide text-gray-400">
 										SISA TUNGGAKAN
 									</div>
-									<div className="font-semibold text-red-600">{fmt(row.sisaTunggakan)}</div>
+									<div className="font-semibold text-red-600">
+										{fmt(row.sisaTunggakan)}
+									</div>
 								</div>
 							</div>
 							<div className="text-right">
 								<div className="text-[10px] font-medium tracking-wide text-gray-400">
 									PROGRESS BAYAR
 								</div>
-								<div className="text-lg font-bold text-amber-500">{row.progressPct}%</div>
+								<div className="text-lg font-bold text-amber-500">
+									{row.progressPct}%
+								</div>
 							</div>
 						</div>
 						<div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-100">
@@ -190,7 +222,8 @@ function RouteComponent() {
 			return next;
 		});
 
-	const start = result.total === 0 ? 0 : (result.page - 1) * result.pageSize + 1;
+	const start =
+		result.total === 0 ? 0 : (result.page - 1) * result.pageSize + 1;
 	const end = Math.min(result.page * result.pageSize, result.total);
 	const years = result.years.length > 0 ? result.years : [search.year];
 
@@ -239,17 +272,28 @@ function RouteComponent() {
 			<div className="flex flex-wrap items-center justify-between gap-3">
 				<div className="flex flex-wrap gap-4 text-sm text-gray-500">
 					<span>
-						Wajib Pajak: <b className="text-gray-900">{result.counts.total.toLocaleString("id-ID")}</b>
+						Wajib Pajak:{" "}
+						<b className="text-gray-900">
+							{result.counts.total.toLocaleString("id-ID")}
+						</b>
 					</span>
 					<span>
-						Lunas: <b className="text-emerald-600">{result.counts.lunas.toLocaleString("id-ID")}</b>
+						Lunas:{" "}
+						<b className="text-emerald-600">
+							{result.counts.lunas.toLocaleString("id-ID")}
+						</b>
 					</span>
 					<span>
-						Sebagian: <b className="text-amber-600">{result.counts.sebagian.toLocaleString("id-ID")}</b>
+						Sebagian:{" "}
+						<b className="text-amber-600">
+							{result.counts.sebagian.toLocaleString("id-ID")}
+						</b>
 					</span>
 					<span>
 						Belum Bayar:{" "}
-						<b className="text-red-600">{result.counts.belumBayar.toLocaleString("id-ID")}</b>
+						<b className="text-red-600">
+							{result.counts.belumBayar.toLocaleString("id-ID")}
+						</b>
 					</span>
 					<span>
 						Sisa Tunggakan:{" "}
@@ -260,7 +304,9 @@ function RouteComponent() {
 				<div className="flex gap-2">
 					<select
 						value={search.year}
-						onChange={(e) => setSearch({ year: Number(e.target.value), page: 1 })}
+						onChange={(e) =>
+							setSearch({ year: Number(e.target.value), page: 1 })
+						}
 						className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 outline-none focus:border-blue-500"
 					>
 						{years.map((y) => (
@@ -292,7 +338,28 @@ function RouteComponent() {
 						<option value="Sebagian">Sebagian</option>
 						<option value="Belum Bayar">Belum Bayar</option>
 					</select>
+					<select
+						value={search.kecamatan}
+						onChange={(e) => setSearch({ kecamatan: e.target.value, page: 1 })}
+						className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 outline-none focus:border-blue-500"
+					>
+						<option value="all">Semua Kecamatan</option>
+						{result.kecamatanList.map((k) => (
+							<option key={k} value={k}>
+								{k}
+							</option>
+						))}
+					</select>
 				</div>
+			</div>
+
+			{/* Analysis charts */}
+			<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+				<KecamatanTunggakanChart
+					data={result.byKecamatan}
+					onSelect={(kecamatan) => setSearch({ kecamatan, page: 1 })}
+				/>
+				<StatusDistributionChart counts={result.counts} />
 			</div>
 
 			{/* Table */}
@@ -310,9 +377,11 @@ function RouteComponent() {
 					</thead>
 					<tbody>
 						{result.rows.map((r, i) => {
-							const key = `${r.npwpd}::${r.jenisPajak}`;
+							const key = `${r.npwpd}::${r.jenisPajak}::${r.kecamatan ?? ""}`;
 							const isOpen = expanded.has(key);
-							const taxLabel = TAX_TYPES.find((t) => t.value === r.jenisPajak)?.label ?? r.jenisPajak;
+							const taxLabel =
+								TAX_TYPES.find((t) => t.value === r.jenisPajak)?.label ??
+								r.jenisPajak;
 							return (
 								<Fragment key={key}>
 									<tr
@@ -330,19 +399,26 @@ function RouteComponent() {
 											</div>
 										</td>
 										<td className={cell}>
-											<div className="font-medium text-gray-900">{r.namaWp}</div>
+											<div className="font-medium text-gray-900">
+												{r.namaWp}
+											</div>
 											<div className="mt-0.5 text-xs text-gray-400">
 												{r.npwpd} / {taxLabel}
+												{r.kecamatan ? ` / ${r.kecamatan}` : ""}
 											</div>
 										</td>
 										<td className={cell}>
 											<StatusBadge status={r.status} />
 										</td>
-										<td className={`${cell} text-right text-gray-700`}>{fmt(r.totalKetetapan)}</td>
+										<td className={`${cell} text-right text-gray-700`}>
+											{fmt(r.totalKetetapan)}
+										</td>
 										<td className={`${cell} text-right text-emerald-600`}>
 											{fmt(r.totalTerbayar)}
 										</td>
-										<td className={`${cell} text-right font-medium text-red-600`}>
+										<td
+											className={`${cell} text-right font-medium text-red-600`}
+										>
 											{fmt(r.sisaTunggakan)}
 										</td>
 									</tr>
@@ -352,7 +428,10 @@ function RouteComponent() {
 						})}
 						{result.rows.length === 0 ? (
 							<tr>
-								<td colSpan={6} className="px-4 py-10 text-center text-gray-400">
+								<td
+									colSpan={6}
+									className="px-4 py-10 text-center text-gray-400"
+								>
 									Tidak ada data yang cocok.
 								</td>
 							</tr>
@@ -364,7 +443,8 @@ function RouteComponent() {
 			{/* Pagination */}
 			<div className="flex items-center justify-between text-sm text-gray-500">
 				<span>
-					Menampilkan {start.toLocaleString("id-ID")}–{end.toLocaleString("id-ID")} dari{" "}
+					Menampilkan {start.toLocaleString("id-ID")}–
+					{end.toLocaleString("id-ID")} dari{" "}
 					{result.total.toLocaleString("id-ID")}
 				</span>
 				<div className="flex items-center gap-2">
